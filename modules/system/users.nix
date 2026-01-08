@@ -9,4 +9,5 @@
     extraGroups = [ "wheel" "audio" "docker" "tty" "dialout" ];
     shell = pkgs.fish;
   };
+
 }

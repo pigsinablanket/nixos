@@ -4,7 +4,7 @@
   time.timeZone = "America/Los_Angeles";
 
   fonts.packages = with pkgs; [
-    (nerdfonts.override { fonts = [ "Inconsolata" ]; })
+    nerd-fonts.inconsolata
   ];
 
   programs.fish.enable = true;
@@ -30,7 +30,6 @@
     wget
     zip
 
-    inconsolata-nerdfont
     powerline-fonts
     fishPlugins.bobthefish
   ];

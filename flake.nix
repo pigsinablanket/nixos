@@ -2,17 +2,18 @@
   description = "System level configuration flake";
 
   inputs = {
-    nixpkgs.url = "github:nixos/nixpkgs/nixos-24.11";
-    home-manager.url = "github:nix-community/home-manager/release-24.11";
+    nixpkgs.url = "github:nixos/nixpkgs/nixos-25.05";
+    unstable.url = "github:nixos/nixpkgs/nixos-unstable";
+    home-manager.url = "github:nix-community/home-manager/release-25.05";
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
-    proxmox-nixos.url = "github:SaumonNet/proxmox-nixos";
+    #proxmox-nixos.url = "github:SaumonNet/proxmox-nixos";
   };
 
   outputs = {
     self,
     nixpkgs,
     home-manager,
-    proxmox-nixos,
+    # proxmox-nixos,
     ...
   } @ inputs: let
     inherit (self) outputs;
@@ -39,5 +40,15 @@
       };
     };
 
+  };
+
+  nixConfig = {
+    extra-substituters = [
+      "https://nix-community.cachix.org"
+       "https://cache.nixos.org/"
+    ];
+    extra-trusted-public-keys = [
+      "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs="
+    ];
   };
 }

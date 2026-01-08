@@ -15,10 +15,6 @@
     homeDirectory = "/home/pigs";
   };
 
-  # Add stuff for your user as you see fit:
-  # programs.neovim.enable = true;
-  # home.packages = with pkgs; [ steam ];
-
   programs.home-manager.enable = true;
   programs.git.enable = true;
 
@@ -26,15 +22,11 @@
 
   home.stateVersion = "24.11";
 
-  # xsession.windowManager.xmonad = {
-  #   enable = true;
-  #   enableContribAndExtras = true;
-  # };
-
   home.packages = with pkgs; [
     arandr
     arduino-ide
     bambu-studio
+    google-chrome
     emacs
     firefox
     flameshot
