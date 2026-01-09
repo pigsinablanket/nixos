@@ -2,18 +2,16 @@
   description = "System level configuration flake";
 
   inputs = {
-    nixpkgs.url = "github:nixos/nixpkgs/nixos-25.05";
+    nixpkgs.url = "github:nixos/nixpkgs/nixos-25.11";
     unstable.url = "github:nixos/nixpkgs/nixos-unstable";
-    home-manager.url = "github:nix-community/home-manager/release-25.05";
+    home-manager.url = "github:nix-community/home-manager/release-25.11";
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
-    #proxmox-nixos.url = "github:SaumonNet/proxmox-nixos";
   };
 
   outputs = {
     self,
     nixpkgs,
     home-manager,
-    # proxmox-nixos,
     ...
   } @ inputs: let
     inherit (self) outputs;
@@ -31,9 +29,9 @@
 
     #desktop =
 
-    # Available through 'home-manager switch --flake .#pigs@laptop'
+    # Available through 'home-manager switch --flake .#pigs'
     homeConfigurations = {
-      "pigs@laptop" = home-manager.lib.homeManagerConfiguration {
+      "pigs" = home-manager.lib.homeManagerConfiguration {
         pkgs = nixpkgs.legacyPackages.x86_64-linux;
         extraSpecialArgs = {inherit inputs outputs;};
         modules = [./home-manager/home.nix];
