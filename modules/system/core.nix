@@ -13,6 +13,7 @@
 
   environment.systemPackages = with pkgs; [
     coreutils
+    dig
     fd
     fish
     git
@@ -30,6 +31,7 @@
     wget
     zip
 
+    home-manager
     powerline-fonts
     fishPlugins.bobthefish
   ];

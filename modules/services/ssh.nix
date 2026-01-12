@@ -2,7 +2,7 @@
 {
   services.openssh = {
     enable = true;
-    ports = [ 22 ];
+    ports = [ 2222 ];
     settings = {
       PasswordAuthentication = true;
       AllowUsers = null; # Allows all users by default. Can be [ "user1" "user2" ]
