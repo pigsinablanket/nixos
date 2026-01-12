@@ -3,9 +3,13 @@
 {
   time.timeZone = "America/Los_Angeles";
 
-  fonts.packages = with pkgs; [
-    nerd-fonts.inconsolata
-  ];
+  fonts = {
+    enableDefaultPackages = true;
+    packages = with pkgs; [
+      nerd-fonts.inconsolata
+      powerline-fonts
+    ];
+  };
 
   programs.fish.enable = true;
 
@@ -30,9 +34,6 @@
     usbutils
     wget
     zip
-
     home-manager
-    powerline-fonts
-    fishPlugins.bobthefish
   ];
 }

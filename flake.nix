@@ -35,9 +35,9 @@
 
     };
 
-    # Available through 'home-manager switch --flake .#pigs@laptop'
+    # Available through 'home-manager switch --flake .#pigs'
     homeConfigurations = {
-      "pigs@laptop" = home-manager.lib.homeManagerConfiguration {
+      "pigs" = home-manager.lib.homeManagerConfiguration {
         pkgs = nixpkgs.legacyPackages.x86_64-linux;
         extraSpecialArgs = {inherit inputs outputs;};
         modules = [./home-manager/home.nix];
