@@ -14,28 +14,47 @@
   systemd.user.startServices = "sd-switch";
   home.stateVersion = "24.11";
 
-  home = {
-    username = "pigs";
-    homeDirectory = "/home/pigs";
+  #home = {
+  #  username = "pigs";
+  #  homeDirectory = "/home/pigs";
+  #};
+
+  programs.git = {
+    enable = true;
+    userName = "Daniel Reimer";
+    settings = {
+      url = {
+        "git@github.com:" = {
+          insteadOf = "https://github.com/";
+        };
+      };
+    };
   };
 
-  programs.git.enable = true;
-
   home.packages = with pkgs; [
-    arandr
-    arduino-ide
-    bambu-studio
-    firefox
+    #arandr
+    #arduino-ide
+    #bambu-studio
+    #firefox
     fishPlugins.bobthefish
-    flameshot
-    freecad
-    gimp
-    google-chrome
-    lxterminal
+    #flameshot
+    #freecad
+    #gimp
+    #google-chrome
+    #lxterminal
     nix-your-shell
-    pavucontrol
+    #pavucontrol
     powerline-fonts
-    zoom-us
+    silver-searcher
+    #zoom-us
+    gopls
+    golangci-lint-langserver
+    semgrep
+    go
+    godef
+    go-tools
+    golangci-lint
+    tree
   ];
 
   programs.emacs = {
@@ -58,6 +77,11 @@
       epkgs.undo-tree
       epkgs.web-mode
       epkgs.yaml-mode
+      epkgs.lsp-mode
+      epkgs.flycheck
+      epkgs.company
+      epkgs.yasnippet
+      epkgs.graphql-mode
     ];
     extraConfig = builtins.readFile ./emacs.el;
   };
@@ -66,6 +90,11 @@
     enable = true;
     shellInit = ''
       set EDITOR "emacs -nw"
+
+      set -U fish_user_paths /Users/dreimer/.rd/bin $fish_user_paths
+
+      export GH_ACCESS_TOKEN_FILE="$HOME/.moonlite/gh_pat.token"
+      export MAAS_DEV_API_KEY_FILE="$HOME/.moonlite/maas_api_key"
 
       if command -q nix-your-shell
         nix-your-shell fish | source
@@ -94,7 +123,6 @@
       gd = "git diff";
       gg = "git grep";
       gp = "git push";
-      go = "git checkout";
     };
   };
 

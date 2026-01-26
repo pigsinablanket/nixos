@@ -4,14 +4,42 @@
 
 (add-hook 'prog-mode-hook     'rainbow-delimiters-mode)
 (add-hook 'after-init-hook    'electric-pair-mode)
-(add-hook 'prog-mode-hook     'untabify-mode)
+;;(add-hook 'prog-mode-hook     'untabify-mode)
 (add-hook 'before-save-hook   'delete-trailing-whitespace)
 (add-hook 'haskell-mode-hook  'haskell-indentation-mode)
 (add-hook 'haskell-mode-hook  'global-ede-mode)
-(add-hook 'markdown-mode-hook 'untabify-mode)
+;;(add-hook 'markdown-mode-hook 'untabify-mode)
 (add-hook 'after-init-hook    'global-auto-revert-mode)
-(add-hook 'after-init-hook    'global-company-mode)
+;; (add-hook 'after-init-hook    'global-company-mode)
 (add-hook 'after-init-hook    'ido-mode)
+
+(add-hook 'prog-mode-hook 'display-line-numbers-mode)
+
+(add-hook 'go-mode-hook 'lsp-deferred)
+;;(add-hook 'go-mode-hook 'subword-mode)
+;; (add-hook 'before-save-hook 'gofmt-before-save)
+
+(add-to-list 'warning-suppress-types '(lsp-mode))
+
+(add-hook 'go-mode-hook
+          (lambda ()
+            (add-hook 'before-save-hook #'gofmt-before-save nil t)))
+
+(setq company-idle-delay 0)
+(setq company-minimum-prefix-length 1)
+(add-hook 'go-mode-hook (lambda () (setq tab-width 2)))
+;; Go - lsp-mode
+;; Set up before-save hooks to format buffer and add/delete imports.
+;;(defun lsp-go-install-save-hooks ()
+;;  (add-hook 'before-save-hook #'lsp-format-buffer t t)
+;;  (add-hook 'before-save-hook #'lsp-organize-imports t t))
+;;(add-hook 'go-mode-hook #'lsp-go-install-save-hooks)
+
+;;(global-flycheck-mode)
+;;(add-hook 'go-mode-hook (lambda ()
+;;                          (setq tab-width 4)
+;;                          (flycheck-add-next-checker 'lsp 'go-vet)
+;;                          (flycheck-add-next-checker 'lsp 'go-staticcheck)))
 
 ;; ---------------------------------------------------------------------
 ;; keybindings
@@ -58,7 +86,7 @@
 (add-hook 'window-setup-hook
           (lambda ()
             (set-face-attribute 'whitespace-line nil
-                                :foreground nil
+                                :foreground 'unspecified
                                 :background "#404040")))
 
 ;; mode-line theme

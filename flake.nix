@@ -6,18 +6,20 @@
     unstable.url = "github:nixos/nixpkgs/nixos-unstable";
     home-manager.url = "github:nix-community/home-manager/release-25.11";
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
+    nix-darwin.url = "github:nix-darwin/nix-darwin/nix-darwin-25.11";
+    nix-darwin.inputs.nixpkgs.follows = "nixpkgs";
   };
 
   outputs = {
     self,
     nixpkgs,
     home-manager,
+    nix-darwin,
     ...
   } @ inputs: let
     inherit (self) outputs;
   in {
     nixosConfigurations = {
-
       # Available through 'nixos-rebuild switch --flake ~/nixos#laptop'
       laptop = nixpkgs.lib.nixosSystem {
         specialArgs = {inherit inputs outputs;};
@@ -32,7 +34,24 @@
           ./hosts/desktop/settings.nix
         ];
       };
+    };
 
+    darwinConfigurations = {
+      "Daniels-MacBook-Pro" = nix-darwin.lib.darwinSystem {
+        system = "aarch64-darwin";
+        modules = [
+          ./hosts/macbook/darwin.nix
+          home-manager.darwinModules.home-manager {
+            home-manager = {
+              # include the home-manager module
+              users.dreimer = import ./home-manager/home.nix;
+            };
+            system.primaryUser = "dreimer";
+            users.users.dreimer.home = "/Users/dreimer";
+          }
+        ];
+        specialArgs = { inherit inputs; };
+      };
     };
 
     # Available through 'home-manager switch --flake .#pigs'
