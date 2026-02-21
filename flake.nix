@@ -8,6 +8,7 @@
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
     nix-darwin.url = "github:nix-darwin/nix-darwin/nix-darwin-25.11";
     nix-darwin.inputs.nixpkgs.follows = "nixpkgs";
+    vpn-confinement.url = "github:Maroka-chan/VPN-Confinement";
   };
 
   outputs = {
@@ -15,6 +16,7 @@
     nixpkgs,
     home-manager,
     nix-darwin,
+    vpn-confinement,
     ...
   } @ inputs: let
     inherit (self) outputs;
@@ -32,6 +34,7 @@
         specialArgs = {inherit inputs outputs;};
         modules = [
           ./hosts/desktop/settings.nix
+          vpn-confinement.nixosModules.default
         ];
       };
     };

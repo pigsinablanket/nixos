@@ -14,10 +14,10 @@
   systemd.user.startServices = "sd-switch";
   home.stateVersion = "24.11";
 
-  #home = {
-  #  username = "pigs";
-  #  homeDirectory = "/home/pigs";
-  #};
+  home = {
+   username = "pigs";
+   homeDirectory = "/home/pigs";
+  };
 
   programs.git = {
     enable = true;
@@ -92,9 +92,6 @@
       set EDITOR "emacs -nw"
 
       set -U fish_user_paths /Users/dreimer/.rd/bin $fish_user_paths
-
-      export GH_ACCESS_TOKEN_FILE="$HOME/.moonlite/gh_pat.token"
-      export MAAS_DEV_API_KEY_FILE="$HOME/.moonlite/maas_api_key"
 
       if command -q nix-your-shell
         nix-your-shell fish | source

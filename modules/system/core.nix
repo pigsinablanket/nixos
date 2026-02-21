@@ -34,6 +34,9 @@
     usbutils
     wget
     zip
+    tcpdump
+    iftop
     home-manager
+    net-tools
   ];
 }
