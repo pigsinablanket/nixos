@@ -21,8 +21,8 @@
 
   programs.git = {
     enable = true;
-    userName = "Daniel Reimer";
     settings = {
+      user.name = "Daniel Reimer";
       url = {
         "git@github.com:" = {
           insteadOf = "https://github.com/";
@@ -35,26 +35,35 @@
     #arandr
     #arduino-ide
     #bambu-studio
-    #firefox
+    firefox
     fishPlugins.bobthefish
     #flameshot
     #freecad
     #gimp
     #google-chrome
-    #lxterminal
+    lxterminal
+    alacritty
     nix-your-shell
     #pavucontrol
     powerline-fonts
     silver-searcher
     #zoom-us
-    gopls
-    golangci-lint-langserver
-    semgrep
-    go
-    godef
-    go-tools
-    golangci-lint
     tree
+
+    # (pkgs.symlinkJoin {
+    #   name = "pi-coding-agent";
+    #   buildInputs = [ pkgs.makeWrapper ];
+    #   paths = [ pkgs.pi-coding-agent ];
+    #   postBuild = ''
+    #     wrapProgram $out/bin/pi \
+    #       --set NPM_CONFIG_PREFIX ${config.home.homeDirectory}/.pi/npm/ \
+    #       --prefix PATH : ${
+    #         pkgs.lib.makeBinPath [
+    #           pkgs.nodejs_latest
+    #         ]
+    #       }
+    #   '';
+    # })
   ];
 
   programs.emacs = {
@@ -78,10 +87,18 @@
       epkgs.web-mode
       epkgs.yaml-mode
       epkgs.lsp-mode
+      epkgs.lsp-ivy
       epkgs.flycheck
       epkgs.company
       epkgs.yasnippet
+      epkgs.yasnippet-snippets
       epkgs.graphql-mode
+      epkgs.rustic
+      epkgs.cargo-mode
+      epkgs.flycheck-rust
+      epkgs.lsp-ui
+      epkgs.projectile
+      epkgs.cargo
     ];
     extraConfig = builtins.readFile ./emacs.el;
   };

@@ -13,7 +13,7 @@
 ;; (add-hook 'after-init-hook    'global-company-mode)
 (add-hook 'after-init-hook    'ido-mode)
 
-(add-hook 'prog-mode-hook 'display-line-numbers-mode)
+;; (add-hook 'prog-mode-hook 'display-line-numbers-mode)
 
 (add-hook 'go-mode-hook 'lsp-deferred)
 ;;(add-hook 'go-mode-hook 'subword-mode)
@@ -191,3 +191,225 @@
   :group 'my-lang-mode )
 (font-lock-add-keywords 'haskell-mode
                         '(("_[a-z][a-zA-Z0-9]*" 0 'haskell-underscore-face)))
+
+;; =============================================================================
+;; Rust Development Configuration
+;; All packages managed externally via Nix
+;; =============================================================================
+
+;; -----------------------------------------------------------------------------
+;; Performance — raise GC threshold while LSP is active
+;; -----------------------------------------------------------------------------
+(setq gc-cons-threshold     (* 100 1024 1024)  ; 100MB
+      read-process-output-max (*   1 1024 1024)) ; 1MB
+
+;; -----------------------------------------------------------------------------
+;; LSP Mode
+;; -----------------------------------------------------------------------------
+(require 'lsp-mode)
+
+(setq lsp-rust-analyzer-server-command              '("rust-analyzer")
+      lsp-idle-delay                                0.5
+      lsp-log-io                                    nil   ; set t to debug
+
+      ;; UI
+      lsp-eldoc-render-all                          nil
+      lsp-signature-auto-configure                  t
+      lsp-headerline-breadcrumb-enable              t
+      lsp-lens-enable                               t     ; inline run/test lens
+
+      ;; rust-analyzer features
+      lsp-rust-analyzer-cargo-watch-command         "clippy"
+      lsp-rust-analyzer-display-chained-hint-types  t
+      lsp-rust-analyzer-display-lifetime-elision-hints-enable "skip_trivial"
+      lsp-rust-analyzer-display-closure-return-type-hints t
+      lsp-rust-analyzer-display-parameter-hints     t
+      lsp-rust-analyzer-display-reborrow-hints      nil)
+
+(with-eval-after-load 'lsp-mode
+  (define-key lsp-mode-map (kbd "C-c l r") #'lsp-rename)
+  (define-key lsp-mode-map (kbd "C-c l a") #'lsp-execute-code-action)
+  (define-key lsp-mode-map (kbd "C-c l d") #'lsp-find-definition)
+  (define-key lsp-mode-map (kbd "C-c l R") #'lsp-find-references)
+  (define-key lsp-mode-map (kbd "C-c l i") #'lsp-find-implementation)
+  (define-key lsp-mode-map (kbd "C-c l h") #'lsp-describe-thing-at-point)
+  (define-key lsp-mode-map (kbd "C-c l f") #'lsp-format-buffer))
+
+;; -----------------------------------------------------------------------------
+;; LSP UI
+;; -----------------------------------------------------------------------------
+(require 'lsp-ui)
+
+(setq lsp-ui-doc-enable               t
+      lsp-ui-doc-position             'at-point
+      lsp-ui-doc-delay                0.5
+      lsp-ui-doc-show-with-cursor     t
+      lsp-ui-sideline-enable          t
+      lsp-ui-sideline-show-diagnostics t
+      lsp-ui-sideline-show-hover      nil   ; doc popup already covers this
+      lsp-ui-sideline-show-code-actions t
+      lsp-ui-peek-enable              t)
+
+(with-eval-after-load 'lsp-ui
+  (define-key lsp-ui-mode-map (kbd "M-.")     #'lsp-ui-peek-find-definitions)
+  (define-key lsp-ui-mode-map (kbd "M-?")     #'lsp-ui-peek-find-references)
+  (define-key lsp-ui-mode-map (kbd "C-c l u") #'lsp-ui-doc-toggle))
+
+;; -----------------------------------------------------------------------------
+;; rust-mode (base layer — rustic derives from this)
+;; -----------------------------------------------------------------------------
+(require 'rust-mode)
+
+(setq rust-format-on-save nil   ; rustic owns formatting
+      rust-indent-offset 2)
+
+;; -----------------------------------------------------------------------------
+;; Rustic
+;; -----------------------------------------------------------------------------
+(require 'rustic)
+
+(setq rustic-lsp-client             'lsp-mode
+      rustic-format-on-save         t
+      rustic-format-trigger         'on-save
+      rustic-compile-backtrace      "1"
+      rustic-compile-display-method 'display-buffer
+      rustic-test-arguments         "--color always")
+
+(with-eval-after-load 'rustic
+  (define-key rustic-mode-map (kbd "C-c C-b") #'rustic-cargo-build)
+  (define-key rustic-mode-map (kbd "C-c C-r") #'rustic-cargo-run)
+  (define-key rustic-mode-map (kbd "C-c C-t") #'rustic-cargo-test)
+  (define-key rustic-mode-map (kbd "C-c C-c") #'rustic-cargo-current-test)
+  (define-key rustic-mode-map (kbd "C-c C-k") #'rustic-cargo-check)
+  (define-key rustic-mode-map (kbd "C-c C-l") #'rustic-cargo-clippy)
+  (define-key rustic-mode-map (kbd "C-c C-d") #'rustic-cargo-doc)
+  (define-key rustic-mode-map (kbd "C-c C-a") #'rustic-cargo-add)
+  (define-key rustic-mode-map (kbd "C-c C-f") #'rustic-format-buffer)
+  (define-key rustic-mode-map (kbd "C-c C-m") #'lsp-rust-analyzer-expand-macro))
+
+(add-hook 'rustic-mode-hook
+          (lambda ()
+            (lsp-deferred)
+            (setq-local fill-column 100)))
+
+;; -----------------------------------------------------------------------------
+;; Cargo minor mode
+;; -----------------------------------------------------------------------------
+(require 'cargo)
+
+(add-hook 'rustic-mode-hook #'cargo-minor-mode)
+
+;; (with-eval-after-load 'cargo
+;;   (define-key cargo-minor-mode-map (kbd "C-c C-v b") #'cargo-process-build)
+;;   (define-key cargo-minor-mode-map (kbd "C-c C-v r") #'cargo-process-run)
+;;   (define-key cargo-minor-mode-map (kbd "C-c C-v t") #'cargo-process-test)
+;;   (define-key cargo-minor-mode-map (kbd "C-c C-v c") #'cargo-process-check)
+;;   (define-key cargo-minor-mode-map (kbd "C-c C-v C") #'cargo-process-clean)
+;;   (define-key cargo-minor-mode-map (kbd "C-c C-v d") #'cargo-process-doc)
+;;   (define-key cargo-minor-mode-map (kbd "C-c C-v D") #'cargo-process-doc-open)
+;;   (define-key cargo-minor-mode-map (kbd "C-c C-v u") #'cargo-process-update)
+;;   (define-key cargo-minor-mode-map (kbd "C-c C-v e") #'cargo-process-run-example))
+
+;; -----------------------------------------------------------------------------
+;; Flycheck
+;; -----------------------------------------------------------------------------
+(require 'flycheck)
+(require 'flycheck-rust)
+
+(setq flycheck-check-syntax-automatically '(save mode-enabled)
+      flycheck-indication-mode            'left-fringe)
+
+(add-hook 'rustic-mode-hook #'flycheck-mode)
+(add-hook 'flycheck-mode-hook #'flycheck-rust-setup)
+
+(with-eval-after-load 'flycheck
+  (define-key flycheck-mode-map (kbd "C-c ! n") #'flycheck-next-error)
+  (define-key flycheck-mode-map (kbd "C-c ! p") #'flycheck-previous-error)
+  (define-key flycheck-mode-map (kbd "C-c ! l") #'flycheck-list-errors))
+
+;; -----------------------------------------------------------------------------
+;; Completion
+;; -----------------------------------------------------------------------------
+
+(require 'company)
+
+(setq company-minimum-prefix-length     1
+      company-idle-delay                0.2
+      company-tooltip-align-annotations t)
+
+(add-hook 'rustic-mode-hook #'company-mode)
+
+(with-eval-after-load 'company
+  (define-key company-active-map (kbd "C-n")   #'company-select-next)
+  (define-key company-active-map (kbd "C-p")   #'company-select-previous)
+  (define-key company-active-map (kbd "<tab>") #'company-complete-selection))
+
+;; -----------------------------------------------------------------------------
+;; Snippets
+;; -----------------------------------------------------------------------------
+;; (require 'yasnippet)
+;; (require 'yasnippet-snippets)
+
+;; (add-hook 'rustic-mode-hook #'yas-minor-mode)
+;; (yas-reload-all)
+
+;; -----------------------------------------------------------------------------
+;; Project navigation
+;; -----------------------------------------------------------------------------
+(require 'projectile)
+
+(projectile-mode +1)
+(define-key projectile-mode-map (kbd "C-c p") #'projectile-command-map)
+
+;; -----------------------------------------------------------------------------
+;; Tree-sitter (Emacs 29+ only — remove block if on 28 or below)
+;; -----------------------------------------------------------------------------
+(when (and (fboundp 'treesit-available-p) (treesit-available-p))
+  (add-hook 'rust-ts-mode-hook
+            (lambda ()
+              (lsp-deferred)
+              (setq-local fill-column 100))))
+
+;; -----------------------------------------------------------------------------
+;; Keybinding reference (C-c prefix summary)
+;; -----------------------------------------------------------------------------
+;;
+;; LSP (C-c l)
+;;   C-c l r   Rename symbol
+;;   C-c l a   Code action
+;;   C-c l d   Go to definition
+;;   C-c l R   Find references
+;;   C-c l i   Find implementation
+;;   C-c l h   Hover docs
+;;   C-c l f   Format buffer
+;;   C-c l u   Toggle lsp-ui-doc popup
+;;
+;; Rustic (C-c C-)
+;;   C-c C-b   cargo build
+;;   C-c C-r   cargo run
+;;   C-c C-t   cargo test (all)
+;;   C-c C-c   cargo test (current fn)
+;;   C-c C-k   cargo check
+;;   C-c C-l   cargo clippy
+;;   C-c C-d   cargo doc
+;;   C-c C-f   rustfmt buffer
+;;   C-c C-m   Expand macro at point
+;;
+;; Cargo minor mode (C-c C-v)
+;;   C-c C-v b   cargo build
+;;   C-c C-v r   cargo run
+;;   C-c C-v t   cargo test
+;;   C-c C-v c   cargo check
+;;   C-c C-v C   cargo clean
+;;   C-c C-v d   cargo doc
+;;   C-c C-v u   cargo update
+;;   C-c C-v e   cargo run --example
+;;
+;; Flycheck (C-c !)
+;;   C-c ! n   Next error
+;;   C-c ! p   Previous error
+;;   C-c ! l   Error list
+;;
+;; Navigation
+;;   M-.   Peek definition
+;;   M-?   Peek references

@@ -38,5 +38,12 @@
     iftop
     home-manager
     net-tools
+    lm_sensors
+    dmidecode
+    disko
+    smartmontools
+    tmux
+    rip2
+    openssl
   ];
 }
