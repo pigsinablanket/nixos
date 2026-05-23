@@ -32,38 +32,23 @@
   };
 
   home.packages = with pkgs; [
-    #arandr
-    #arduino-ide
-    #bambu-studio
+    arandr
     firefox
     fishPlugins.bobthefish
-    #flameshot
-    #freecad
-    #gimp
-    #google-chrome
+    flameshot
+    freecad
+    gimp
+    google-chrome
     lxterminal
     alacritty
     nix-your-shell
-    #pavucontrol
+    pavucontrol
     powerline-fonts
+    bat
+    delta
     silver-searcher
-    #zoom-us
     tree
-
-    # (pkgs.symlinkJoin {
-    #   name = "pi-coding-agent";
-    #   buildInputs = [ pkgs.makeWrapper ];
-    #   paths = [ pkgs.pi-coding-agent ];
-    #   postBuild = ''
-    #     wrapProgram $out/bin/pi \
-    #       --set NPM_CONFIG_PREFIX ${config.home.homeDirectory}/.pi/npm/ \
-    #       --prefix PATH : ${
-    #         pkgs.lib.makeBinPath [
-    #           pkgs.nodejs_latest
-    #         ]
-    #       }
-    #   '';
-    # })
+    alacritty
   ];
 
   programs.emacs = {

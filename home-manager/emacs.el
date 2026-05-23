@@ -117,6 +117,13 @@
 ;; Make haskell use unicode characters
 (setq haskell-font-lock-symbols t)
 
+(defun my-rust-mode-hook ()
+  "Custom settings for rust-mode."
+  (setq indent-tabs-mode nil)     ; Use spaces for indentation
+  (setq tab-width 2)             ; Set the display width of a tab character to 2 spaces
+  (setq rust-basic-offset 2))    ; Set the indentation step for Rust code to 2 spaces
+
+(add-hook 'rust-mode-hook 'my-rust-mode-hook)
 
 (custom-set-variables
  '(ansi-color-faces-vector
