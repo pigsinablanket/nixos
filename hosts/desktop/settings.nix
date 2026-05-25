@@ -79,19 +79,7 @@ in
   networking.hostName = "pigs-desktop";
 
   # Headscale tailnet (control plane + local tailscale client)
-  services.headscale-setup = {
-    enable = true;
-    users = {
-      pigs = {
-        preAuthKeys = {
-          default = {
-            reusable = true;
-            ephemeral = false;
-          };
-        };
-      };
-    };
-  };
+  services.headscale-setup.enable = true;
 
   zramSwap = {
     enable = true;
