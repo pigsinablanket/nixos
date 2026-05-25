@@ -7,5 +7,5 @@ let
   laptop = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAID5TIg5X66lTGEdTxCx+1V/C8I3wdxCfysDp07lcwdgP root@pigs-laptop";
 in {
   # Secrets for laptop
-
+  "tailscale-auth-key.age".publicKeys = [ user laptop ];
 }

@@ -12,4 +12,5 @@ in {
   "grafana-secret.age".publicKeys = [ user desktop ];
   "porkbun-api-key.age".publicKeys = [ user desktop ];
   "porkbun-secret-key.age".publicKeys = [ user desktop ];
+  "tailscale-auth-key.age".publicKeys = [ user desktop ];
 }

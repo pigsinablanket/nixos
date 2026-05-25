@@ -79,6 +79,7 @@ in
     # Remote clients use `headscaleUrl` (https://home.pigs.dev).
     services.tailscale = {
       enable = true;
+      authKeyFile = config.age.secrets."tailscale-auth-key".path;
       extraUpFlags = [
         "--login-server=http://127.0.0.1:${toString config.services.headscale.port}"
       ];

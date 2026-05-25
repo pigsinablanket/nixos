@@ -86,5 +86,21 @@
   #hardware.nvidia.package = pkgs.linuxPackages.nvidia_x11_legacy470;
   #nixpkgs.config.nvidia.acceptLicense = true;
 
+  # Agenix secrets
+  age.secrets."tailscale-auth-key" = {
+    file = ./secrets/tailscale-auth-key.age;
+    owner = "root";
+  };
+
+  # Tailscale client (connects to remote Headscale)
+  services.tailscale = {
+    enable = true;
+    authKeyFile = config.age.secrets."tailscale-auth-key".path;
+    extraUpFlags = [
+      "--login-server=https://home.pigs.dev"
+    ];
+    openFirewall = true;
+  };
+
   system.stateVersion = "24.11";
 }

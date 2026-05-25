@@ -72,6 +72,11 @@ in
     owner = "root";
   };
 
+  age.secrets."tailscale-auth-key" = {
+    file = ./secrets/tailscale-auth-key.age;
+    owner = "root";
+  };
+
   # Inject searxng secret via environment file
   services.searx.environmentFile = config.age.secrets."searxng-secret".path;
 

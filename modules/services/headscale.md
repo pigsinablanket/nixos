@@ -17,22 +17,26 @@ After `nixos-rebuild switch`:
 # 1. Create a headscale user
 sudo headscale users create pigs
 
-# 2. Generate a reusable pre-auth key
-sudo headscale preauthkeys create --user pigs --reusable
+# 2. Find the user ID (headscale 0.28+ requires numeric IDs)
+sudo headscale users list
+# → note the ID for "pigs" (e.g. 1)
+
+# 3. Generate a reusable pre-auth key
+sudo headscale preauthkeys create --user <id> --reusable
 # → note the output key
 
-# 3. Register this machine
-sudo tailscale up --login-server=http://127.0.0.1:8080 --authkey=<key-from-step-2>
+# 4. Register this machine
+sudo tailscale up --login-server=http://127.0.0.1:8080 --authkey=<key-from-step-3>
 
-# 4. Verify
+# 5. Verify
 tailscale status
 ```
 
 ## Register a Remote Device
 
 ```bash
-# On pigs-desktop: generate a key
-sudo headscale preauthkeys create --user pigs --reusable
+# On pigs-desktop: generate a key (use numeric user ID)
+sudo headscale preauthkeys create --user <id> --reusable
 
 # On the remote device (install Tailscale first):
 tailscale up --login-server=https://home.pigs.dev --authkey=<key>
