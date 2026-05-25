@@ -1,4 +1,4 @@
-{ pkgs, lib, unstable, llmAgent, ... }:
+{ pkgs, lib, config, unstable, llmAgent, ... }:
 
 let
   latestLlamaCpp = (pkgs.llama-cpp.override {
@@ -45,7 +45,34 @@ in
     ../../modules/system/users.nix
     ../../modules/system/zswap.nix
     ../../modules/services/searxng.nix
+    ../../modules/services/porkbun-ddns.nix
   ];
+
+  # Agenix secrets
+  age.secrets."searxng-secret" = {
+    file = ./secrets/searxng-secret.age;
+    owner = "searx";
+    group = "searx";
+  };
+
+  age.secrets."grafana-secret" = {
+    file = ./secrets/grafana-secret.age;
+    owner = "grafana";
+    group = "grafana";
+  };
+
+  age.secrets."porkbun-api-key" = {
+    file = ./secrets/porkbun-api-key.age;
+    owner = "root";
+  };
+
+  age.secrets."porkbun-secret-key" = {
+    file = ./secrets/porkbun-secret-key.age;
+    owner = "root";
+  };
+
+  # Inject searxng secret via environment file
+  services.searx.environmentFile = config.age.secrets."searxng-secret".path;
 
   system.stateVersion = "24.11";
   networking.hostName = "pigs-desktop";
@@ -226,7 +253,7 @@ environment.systemPackages = with pkgs; [
   nvtopPackages.nvidia
 
     (pkgs.writeShellScriptBin "pi-node" ''
-      export PATH=${nodejs}/bin:$PATH
+      export PATH=${nodejs}/bin:${python3}/bin:$PATH
       exec ${pi-coding-agent}/bin/pi "$@"
     '')
     # pi-coding-agent
@@ -443,6 +470,7 @@ environment.systemPackages = with pkgs; [
               --chat-template-kwargs "{\"preserve_thinking\": true}" \
               --cache-type-k q8_0 --cache-type-v q8_0 \
               --flash-attn on \
+              --no-mmproj-offload \
               -c 164000
           '';
         };
@@ -516,7 +544,8 @@ systemd.services.llama-swap = {
         http_port = 3001;
       };
     };
-    settings.security.secret_key = "SW2YcwTIb9zpOOhoPsMm";
+    # $__file{} is a Grafana runtime directive — reads the file at startup, not build time
+    settings.security.secret_key = "$__file{${config.age.secrets."grafana-secret".path}}";
 
     provision = {
       enable = true;

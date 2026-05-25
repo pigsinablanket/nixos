@@ -13,6 +13,7 @@
     disko.url = "github:nix-community/disko";
     disko.inputs.nixpkgs.follows = "nixpkgs";
     llm-agents.url = "github:numtide/llm-agents.nix";
+    agenix.url = "github:ryantm/agenix";
   };
 
   outputs = {
@@ -23,6 +24,7 @@
     nix-darwin,
     vpn-confinement,
     llm-agents,
+    agenix,
     ...
   } @ inputs: let
     inherit (self) outputs;
@@ -40,6 +42,7 @@
           inherit inputs outputs;
         };
         modules = [
+          agenix.nixosModules.default
           ./hosts/laptop/settings.nix
         ];
       };
@@ -51,6 +54,7 @@
           llmAgent = llmAgentPkgs;
         };
         modules = [
+          agenix.nixosModules.default
           inputs.disko.nixosModules.disko
          ./hosts/desktop/settings.nix
           # ./hosts/desktop/disko-storage.nix

@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ pkgs, config, ... }:
 
 {
   imports = [
@@ -7,7 +7,7 @@
     ../../modules/gui/steam.nix
     ../../modules/gui/xmonad.nix
     ../../modules/services/docker.nix
-    ../../modules/services/mediawiki.nix
+    # ../../modules/services/mediawiki.nix
     # ../../modules/services/proxmox.nix
     ../../modules/services/ssh.nix
     ../../modules/system/boot.nix
@@ -16,8 +16,6 @@
     ../../modules/system/users.nix
     ../../modules/system/zswap.nix
   ];
-
-  programs.adb.enable = true;
 
   programs.nano = {
     enable = true;

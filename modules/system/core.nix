@@ -45,5 +45,6 @@
     tmux
     rip2
     openssl
+    agenix-cli
   ];
 }

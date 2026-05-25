@@ -20,7 +20,7 @@
     # Secret injected at runtime — never baked into the Nix store.
     # File format:  SEARXNG_SECRET=<your-secret>
     # Generate:     openssl rand -hex 32
-    # environmentFile = "/run/secrets/searxng-secret";
+    # environmentFile is set from the host config via agenix secret
 
     # Plain HTTP server — fine for local/LAN agent use.
     # Flip to true and set domain if you want nginx + uwsgi.
@@ -62,7 +62,7 @@
       server = {
         port         = 8082;
         bind_address = "0.0.0.0";   # change to "0.0.0.0" for LAN access
-        secret_key   = "e1b495f6b6a79aed67edbb0025626f45fd082eb911f6e24ce3135070725bb317";
+        secret_key   = "PLEASE-SET-VIA-SEARXNG_SECRET-ENV";
         limiter      = false;
         method       = "GET";         # agents build simple query URLs
         formats      = [ "html" "json" "csv" ];
