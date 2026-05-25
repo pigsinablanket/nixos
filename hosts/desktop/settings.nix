@@ -46,6 +46,7 @@ in
     ../../modules/system/zswap.nix
     ../../modules/services/searxng.nix
     ../../modules/services/porkbun-ddns.nix
+    ../../modules/services/headscale.nix
   ];
 
   # Agenix secrets
@@ -76,6 +77,21 @@ in
 
   system.stateVersion = "24.11";
   networking.hostName = "pigs-desktop";
+
+  # Headscale tailnet (control plane + local tailscale client)
+  services.headscale-setup = {
+    enable = true;
+    users = {
+      pigs = {
+        preAuthKeys = {
+          default = {
+            reusable = true;
+            ephemeral = false;
+          };
+        };
+      };
+    };
+  };
 
   zramSwap = {
     enable = true;
